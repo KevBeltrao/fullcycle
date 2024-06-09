@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  api:
+    build:
+      context: ./api
+    container_name: api
+    volumes:
+      - ./api:/app
+    networks:
+      - node-network
+    depends_on:
+      - db
+    tty: true
+    command: bash -c 'while !</dev/tcp/db/3306; do sleep 1; done; node index.js'
+
+  db:
+    platform: linux/x86_64
+    image: mysql:5.7
+    command: --innodb-use-native-aio=0
+    container_name: db
+    restart: always
+    tty: true
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=fullcycle
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_PASSWORD=password
+    networks:
+      - node-network
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+    networks:
+      - node-network
+    depends_on:
+      - api
+
+networks:
+  node-network:
+    driver: bridge

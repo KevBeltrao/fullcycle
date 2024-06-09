@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Names</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <h1>Full Cycle Rocks!</h1>
+
+  <div class="container">
+    <form method="post" action="/people">
+      <label for="name">
+        <p>New name:</p>
+        <input type="text" id="name" name="name" required />
+      </label>
+      <button type="submit">Add</button>
+    </form>
+
+    <ul>
+      <% people.forEach(({ name, id }) => { %>
+        <li>
+          <div class="list-item">
+            <span><%= name %></span>
+            
+            <button class="delete" data-id="<%= id %>" data-name="<%= name %>">X</button>
+          </div>
+        </li>
+        <% }); %>
+    </ul>
+  </div>
+
+  <script src="scripts.js"></script>
+</body>
+
+</html>
