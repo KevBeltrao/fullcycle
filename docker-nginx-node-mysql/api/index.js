@@ -1,6 +1,6 @@
 const express = require('express');
 
-const db = require('./config/db');
+const { initializeDatabase, getConnection } = require('./config/db');
 
 const app = express();
 app.set('view engine', 'ejs');
@@ -9,6 +9,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 app.get('/', async (req, res) => {
+  const db = getConnection();
   db.query('SELECT * FROM people', (err, people) => {
     if (err) {
       return res.send('something went wrong');
@@ -18,6 +19,7 @@ app.get('/', async (req, res) => {
 });
 
 app.post('/people', (req, res) => {
+  const db = getConnection();
   db.query('INSERT INTO people SET ?', req.body, (err, result) => {
     if (err) {
       return res.status(500).send(err);
@@ -27,6 +29,7 @@ app.post('/people', (req, res) => {
 });
 
 app.delete('/people/:id', (req, res) => {
+  const db = getConnection();
   db.query('DELETE FROM people WHERE id = ?', [req.params.id], (err) => {
     if (err) {
       return res.status(500).send(err);
@@ -36,6 +39,8 @@ app.delete('/people/:id', (req, res) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log('Server is running on port 3000');
+initializeDatabase().then(() => {
+  app.listen(3000, () => {
+    console.log('Server is running on port 3000');
+  });
 });
