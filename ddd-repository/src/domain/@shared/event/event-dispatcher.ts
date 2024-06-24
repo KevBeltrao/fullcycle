@@ -38,3 +38,5 @@ export default class EventDispatcher implements EventDispatcherInterface {
     }
   }
 }
+
+export const eventDispatchSingleton = new EventDispatcher();

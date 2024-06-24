@@ -1,3 +1,4 @@
+import SendConsoleLogHandler from "../event/handler/send-console.log-handler";
 import Address from "../value-object/address";
 import Customer from "./customer";
 
@@ -33,6 +34,20 @@ describe("Customer unit tests", () => {
     customer.activate();
 
     expect(customer.isActive()).toBe(true);
+  });
+
+  it("should dispatch customerAddressChangedEvent when calling changeAddress", () => {
+    const spySendConsoleLogHandler = jest.spyOn(SendConsoleLogHandler.prototype, 'handle');
+    const customer = new Customer("1", "Customer 1");
+    const address = new Address("Street 1", 123, "13330-250", "São Paulo");
+    customer.Address = address;
+
+    const newAddress = new Address("Street 2", 456, "13330-251", "Rio de Janeiro");
+
+    customer.changeAddress(newAddress);
+
+    expect(spySendConsoleLogHandler).toHaveBeenCalledTimes(1);
+    expect(spySendConsoleLogHandler.mock.calls[0][0].eventData).toBe(customer);
   });
 
   it("should throw error when address is undefined when you activate a customer", () => {

@@ -1,5 +1,7 @@
 import { Sequelize } from "sequelize-typescript";
 import Customer from "../../../../domain/customer/entity/customer";
+import SendConsoleLog1Handler from "../../../../domain/customer/event/handler/send-console-log-1-handler";
+import SendConsoleLog2Handler from "../../../../domain/customer/event/handler/send-console-log-2-handler";
 import Address from "../../../../domain/customer/value-object/address";
 import CustomerModel from "./customer.model";
 import CustomerRepository from "./customer.repository";
@@ -15,7 +17,7 @@ describe("Customer repository test", () => {
       sync: { force: true },
     });
 
-    await sequelize.addModels([CustomerModel]);
+    sequelize.addModels([CustomerModel]);
     await sequelize.sync();
   });
 
@@ -24,6 +26,9 @@ describe("Customer repository test", () => {
   });
 
   it("should create a customer", async () => {
+    const spySendConsoleLog1Handler = jest.spyOn(SendConsoleLog1Handler.prototype, 'handle');
+    const spySendConsoleLog2Handler = jest.spyOn(SendConsoleLog2Handler.prototype, 'handle');
+
     const customerRepository = new CustomerRepository();
     const customer = new Customer("123", "Customer 1");
     const address = new Address("Street 1", 1, "Zipcode 1", "City 1");
@@ -42,6 +47,11 @@ describe("Customer repository test", () => {
       zipcode: address.zip,
       city: address.city,
     });
+
+    expect(spySendConsoleLog1Handler).toHaveBeenCalledTimes(1);
+    expect(spySendConsoleLog1Handler.mock.calls[0][0].eventData).toBe(customer);
+    expect(spySendConsoleLog2Handler).toHaveBeenCalledTimes(1);
+    expect(spySendConsoleLog2Handler.mock.calls[0][0].eventData).toBe(customer);
   });
 
   it("should update a customer", async () => {

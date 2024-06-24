@@ -1,7 +1,20 @@
+import { eventDispatchSingleton } from "../../../../domain/@shared/event/event-dispatcher";
 import Customer from "../../../../domain/customer/entity/customer";
-import Address from "../../../../domain/customer/value-object/address";
+import CustomerCreatedEvent from "../../../../domain/customer/event/customer-created.event";
+import SendConsoleLog1Handler from "../../../../domain/customer/event/handler/send-console-log-1-handler";
+import SendConsoleLog2Handler from "../../../../domain/customer/event/handler/send-console-log-2-handler";
+import SendConsoleLogHandler from "../../../../domain/customer/event/handler/send-console.log-handler";
 import CustomerRepositoryInterface from "../../../../domain/customer/repository/customer-repository.interface";
+import Address from "../../../../domain/customer/value-object/address";
 import CustomerModel from "./customer.model";
+
+const sendConsoleLog1Handler = new SendConsoleLog1Handler();
+const sendConsoleLog2Handler = new SendConsoleLog2Handler();
+eventDispatchSingleton.register('CustomerCreatedEvent', sendConsoleLog1Handler);
+eventDispatchSingleton.register('CustomerCreatedEvent', sendConsoleLog2Handler);
+
+const sendConsoleLogHandler = new SendConsoleLogHandler();
+eventDispatchSingleton.register('CustomerAddressChangedEvent', sendConsoleLogHandler);
 
 export default class CustomerRepository implements CustomerRepositoryInterface {
   async create(entity: Customer): Promise<void> {
@@ -15,6 +28,9 @@ export default class CustomerRepository implements CustomerRepositoryInterface {
       active: entity.isActive(),
       rewardPoints: entity.rewardPoints,
     });
+
+    const customerCreatedEvent = new CustomerCreatedEvent(entity);
+    eventDispatchSingleton.notify(customerCreatedEvent);
   }
 
   async update(entity: Customer): Promise<void> {
@@ -56,7 +72,9 @@ export default class CustomerRepository implements CustomerRepositoryInterface {
       customerModel.zipcode,
       customerModel.city
     );
+
     customer.changeAddress(address);
+
     return customer;
   }
 
@@ -72,7 +90,9 @@ export default class CustomerRepository implements CustomerRepositoryInterface {
         customerModels.zipcode,
         customerModels.city
       );
+
       customer.changeAddress(address);
+
       if (customerModels.active) {
         customer.activate();
       }

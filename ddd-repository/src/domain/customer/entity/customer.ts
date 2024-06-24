@@ -1,4 +1,9 @@
+import { eventDispatchSingleton } from "../../@shared/event/event-dispatcher";
+import CustomerAddressChangedEvent from "../event/customer-address-changed.event";
+import SendConsoleLogHandler from "../event/handler/send-console.log-handler";
 import Address from "../value-object/address";
+
+eventDispatchSingleton.register("CustomerAddressChangedEvent", new SendConsoleLogHandler());
 
 export default class Customer {
   private _id: string;
@@ -45,6 +50,9 @@ export default class Customer {
   
   changeAddress(address: Address) {
     this._address = address;
+
+    const customerAddressChangedEvent = new CustomerAddressChangedEvent(this);
+    eventDispatchSingleton.notify(customerAddressChangedEvent);
   }
 
   isActive(): boolean {
