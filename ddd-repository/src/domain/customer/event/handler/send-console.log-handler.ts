@@ -5,7 +5,7 @@ export default class SendConsoleLogHandler
   implements EventHandlerInterface<ProductCreatedEvent>
 {
   handle(event: ProductCreatedEvent): void {
-    const { id, nome, endereco } = event.eventData;
-    console.log(`Endereço do cliente: ${id}, ${nome} alterado para: ${endereco}`); 
+    const { id, name, Address } = event.eventData;
+    console.log(`Endereço do cliente: ${id}, ${name} alterado para: ${Address}`); 
   }
 }
