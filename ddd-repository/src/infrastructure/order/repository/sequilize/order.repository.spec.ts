@@ -112,8 +112,11 @@ describe("Order repository test", () => {
     });
 
     const newOrderItem1 = new OrderItem("3", product1.name, product1.price, product1.id, 1);
-
+    
+    console.log('orderorderorderorderorderorderorderorderorderorderorderorderorder');
+    console.log(order);
     order.changeItems([newOrderItem1]);
+    console.log(order);
 
     await orderRepository.update(order);
 
