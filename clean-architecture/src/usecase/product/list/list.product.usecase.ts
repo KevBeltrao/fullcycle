@@ -2,7 +2,7 @@ import type ProductRepositoryInterface from "../../../domain/product/repository/
 import type { OutputListProductDto } from "./list.product.dto";
 
 
-export default class FindProductUseCase {
+export default class ListProductUseCase {
   constructor(private productRepository: ProductRepositoryInterface) {
     this.productRepository = productRepository
   }
