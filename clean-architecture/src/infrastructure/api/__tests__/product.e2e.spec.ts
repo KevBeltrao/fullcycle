@@ -5,8 +5,7 @@ import request from "supertest";
 
 describe("E2E test for product", () => {
   beforeEach(async () => {
-    sequelize.addModels([ProductModel]);
-    await sequelize.sync({ force: true,  });
+    await sequelize.sync({ force: true, });
   });
 
   afterAll(async () => {
@@ -32,15 +31,6 @@ describe("E2E test for product", () => {
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveLength(2);
-    console.log('response.body');
-    console.log('response.body');
-    console.log('response.body');
-    console.log('response.body');
-    console.log('response.body');
-    console.log('response.body');
-    console.log('response.body');
-    console.log('response.body');
-    console.log(response.body);
     expect(response.body[0].id).toBe(product1.id);
     expect(response.body[0].name).toBe(product1.name);
     expect(response.body[0].price).toBe(product1.price);
